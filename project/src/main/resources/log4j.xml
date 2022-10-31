@@ -12,7 +12,7 @@
 	
 	<!-- Application Loggers -->
 	<logger name="kr.co.project">
-		<level value="info" />
+		<level value="console" />
 	</logger>
 	
 	<!-- 3rdparty Loggers -->
