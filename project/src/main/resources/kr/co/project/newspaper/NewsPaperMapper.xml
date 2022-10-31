@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.project.newspaper.NewsPaperMapper">
+	
+	<insert id="insert" parameterType="kr.co.project.newspaper.NewsPaperVO">
+		INSERT INTO ${tableName} (
+			title, content, regdate, viewcount, member_no, filename_org, filename_real
+		)
+		VALUES ( 
+			#{title}, #{content}, now(), 0, #{member_no}, #{filename_org}, #{filename_real}
+		)
+	</insert>
+	
+	<select id="getTotalCount" parameterType="kr.co.project.newspaper.NewsPaperVO" resultType="int"> 
+	<!-- 
+		실제 int가 아니라  java.lang.Integer 이다. 알리아스가 걸려있음
+		myBatis는 무조건 Object를 return하게 되어있음.
+	-->
+		SELECT count(*) 
+		FROM ${tableName}
+		<where>
+			<if test="stype != null and stype != ''">
+				<if test="stype != 'all'">
+					${stype} LIKE '%${sword}%'
+				</if>
+				<if test="stype == 'all'">
+					title LIKE '%${sword}%' OR content LIKE '%${sword}%' 
+				</if>
+			</if>
+		</where>
+	</select>
+	
+	<select id="getList" parameterType="kr.co.project.newspaper.NewsPaperVO" resultType="kr.co.project.newspaper.NewsPaperVO">
+		SELECT * FROM ${tableName}
+		<where>
+			<if test="stype != null and stype != ''">
+				<if test="stype != 'all'">
+					${stype} LIKE '%${sword}%'
+				</if>
+				<if test="stype == 'all'">
+					title LIKE '%${sword}%' OR content LIKE '%${sword}%' 
+				</if>
+			</if>
+		</where>
+		ORDER BY regdate DESC
+		LIMIT ${startIdx},${rowPerPage}
+	</select>
+	
+	<select id="view" parameterType="int" resultType="kr.co.project.newspaper.NewsPaperVO">
+		SELECT * FROM ${tableName} WHERE no = #{xxxxx}
+	</select>
+	
+	<update id="updateViewcount" parameterType="int">
+		UPDATE ${tableName} SET viewcount = viewcount +1 WHERE no = #{no}
+	</update>
+	
+	<update id="update">
+		UPDATE ${tableName} SET
+			title = #{title}
+			, content = #{content}
+			<if test="filename_org != null">
+			, filename_org = #{filename_org}
+			, filename_real = #{filename_real}
+			</if>
+		WHERE no = #{no}
+	</update>
+	
+	<delete id="delete" parameterType="int">
+		DELETE FROM ${tableName} WHERE no=#{no}
+	</delete>
+</mapper>

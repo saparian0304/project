@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.project.news.NewsMapper">
+	
+	<insert id="insert" parameterType="kr.co.project.news.NewsVO">
+		INSERT INTO newsboard (
+			title, content, writer, postdate, viewcount
+		) VALUES (
+			#{title}, #{content}, #{writer}, NOW(), 0
+		)
+	</insert>
+	
+	<select id="getTotalCount" parameterType="kr.co.project.news.NewsVO" resultType="int">
+		SELECT 
+			COUNT(*)
+		FROM newsboard
+		<where>
+			<if test="searchWord != null and searchWord != '' and searchType != 'all'">
+			${searchType} LIKE '%${searchWord}%'
+			</if>
+			<if test="searchWord != null and searchWord != '' and searchType == 'all'">
+			title LIKE '%${searchWord}%' OR content LIKE '%${searchWord}%'
+			</if>
+		</where> 
+	</select>
+	
+	<select id="getList" parameterType="kr.co.project.news.NewsVO" resultType="kr.co.project.news.NewsVO">
+		SELECT * 
+		FROM newsboard
+		<where>
+			<if test="searchWord != null and searchWord != '' and searchType != 'all'">
+			${searchType} LIKE '%${searchWord}%'
+			</if>
+			<if test="searchWord != null and searchWord != '' and searchType == 'all'">
+			title LIKE '%${searchWord}%' OR content LIKE '%${searchWord}%'
+			</if>
+		</where>
+		ORDER BY postdate DESC
+		LIMIT ${startIdx},${rowPerPage}
+	</select>
+	
+	<select id="view" parameterType="kr.co.project.news.NewsVO" resultType="kr.co.project.news.NewsVO">
+		SELECT * FROM newsboard 
+		WHERE no = #{no}
+	</select>
+	
+	<update id="update" parameterType="kr.co.project.news.NewsVO">
+		UPDATE newsboard SET title = #{title}, content = #{content}
+		WHERE no = #{no}
+	</update>
+	
+	<delete id="delete">
+		DELETE FROm newsboard WHERE no = #{no}
+	</delete>
+</mapper>
