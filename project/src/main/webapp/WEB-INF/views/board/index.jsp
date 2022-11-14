@@ -43,7 +43,7 @@
 		
         <div class="sub">
             <div class="size">
-                <h3 class="sub_title">게시판</h3>
+                <h3 class="sub_title">게시판  -- ES : ${es.gu_nm }</h3>
     
                 <div class="bbs">
                     <table class="list">

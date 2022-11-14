@@ -1,6 +1,7 @@
 package kr.co.project.board;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import kr.co.project.comment.CommentService;
-import kr.co.project.comment.CommentVO;
 import kr.co.project.member.MemberVO;
+import util.ElasticSearch;
 
 @Controller
 public class BoardController {
@@ -28,8 +29,9 @@ public class BoardController {
 	CommentService cService;
 	
 	@RequestMapping("/board/index.do")
-	public String index(Model model, BoardVO vo) {
+	public String index(Model model, BoardVO vo) throws IOException {
 		model.addAttribute("data", service.index(vo));
+		model.addAttribute("es", ElasticSearch.getDocument("seoul_wifi", "1"));
 		return "board/index";
 	}
 	
